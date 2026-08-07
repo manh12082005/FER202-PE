@@ -1,0 +1,84 @@
+{
+  "product": [
+    {
+      "id": 8,
+      "title": "Microsoft Surface Laptop 4",
+      "description": "Style and speed. Stand out on HD video calls backed by Studio Mics. Capture ideas on the vibrant touchscreen.",
+      "price": 1499,
+      "discountPercentage": 10.23,
+      "rating": 4.43,
+      "stock": 68,
+      "brand": 5,
+      "category": 3,
+      "image": "sureface.jpeg"
+    },
+    {
+      "id": 9,
+      "title": "Infinix INBOOK",
+      "description": "Infinix Inbook X1 Ci3 10th 8GB 256GB 14 Win10 Grey – 1 Year Warranty",
+      "price": 1099,
+      "discountPercentage": 11.83,
+      "rating": 4.54,
+      "stock": 96,
+      "brand": 6,
+      "category": 3,
+      "image": "infinix.jpg"
+    },
+    {
+      "id": 10,
+      "title": "Hyaluronic Acid Serum",
+      "description": "L'OrÃ©al Paris introduces Hyaluron Expert Replumping Serum formulated with 1.5% Hyaluronic Acid",
+      "price": 19,
+      "discountPercentage": 13.31,
+      "rating": 4.83,
+      "stock": 110,
+      "brand": 6,
+      "category": 4,
+      "image": "Hyaluronic.jpg"
+    }
+  ],
+  "category": [
+    {
+      "id": 1,
+      "name": "smartphones"
+    },
+    {
+      "id": 2,
+      "name": "home-decoration"
+    },
+    {
+      "id": 3,
+      "name": "laptops"
+    },
+    {
+      "id": 4,
+      "name": "skincare"
+    }
+  ],
+  "brand": [
+    {
+      "id": 1,
+      "name": "Apple"
+    },
+    {
+      "id": 2,
+      "name": "Samsung"
+    },
+    {
+      "id": 3,
+      "name": "OPPO"
+    },
+    {
+      "id": 4,
+      "name": "Huawei"
+    },
+    {
+      "id": 5,
+      "name": "Microsoft Surface"
+    },
+    {
+      "id": 6,
+      "name": "Infinix"
+    }
+  ]
+}
