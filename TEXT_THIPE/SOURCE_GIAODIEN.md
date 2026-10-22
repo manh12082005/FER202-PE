@@ -5,7 +5,17 @@ Tài liệu này được biên soạn siêu chi tiết theo đúng từng cấu
 *(Lưu ý chung: Ở tất cả các file có dùng, phải đảm bảo đã `import 'bootstrap/dist/css/bootstrap.min.css';` ở file `App.js` hoặc `index.js`)*
 
 ---
+// React Bootstrap - Variant Colors
 
+// primary: Xanh dương (#0d6efd)
+// secondary: Xám (#6c757d)
+// success: Xanh lá (#198754)
+// danger: Đỏ (#dc3545)
+// warning: Vàng (#ffc107)
+// info: Xanh cyan (#0dcaf0)
+// light: Trắng xám (#f8f9fa)
+// dark: Xám đen (#212529)
+// link: Hiển thị dạng liên kết, không có màu nền cố định
 ## I. TÍNH TOÁN TRÊN MẢNG (ARRAY METHODS HAY GẶP TRONG ĐỀ THI)
 
 ### 1. Tính Average (Trung bình) của mảng Rate ⭐
@@ -64,16 +74,16 @@ const avgPhimTot = phimTot.reduce((sum, item) => sum + item.rate, 0) / phimTot.l
 
 #### 📊 BẢNG TÓM TẮT ARRAY METHODS HAY DÙNG ĐI THI
 
-| Mục tiêu | Code | Kết quả |
-|---|---|---|
-| **Tổng** tất cả rate | `list.reduce((sum, i) => sum + i.rate, 0)` | Số tổng |
-| **Trung bình** rate | `list.reduce(...) / list.length` | Số thập phân |
-| **Lọc** rate >= 7 | `list.filter(i => i.rate >= 7)` | Mảng mới |
-| **Max** rate | `Math.max(...list.map(i => i.rate))` | Giá trị lớn nhất |
-| **Min** rate | `Math.min(...list.map(i => i.rate))` | Giá trị nhỏ nhất |
-| **Đếm** phim rate cao | `list.filter(i => i.rate >= 8).length` | Số đếm |
-| **Sắp xếp** rate giảm dần | `[...list].sort((a, b) => b.rate - a.rate)` | Mảng đã sắp xếp |
-| **Sắp xếp** rate tăng dần | `[...list].sort((a, b) => a.rate - b.rate)` | Mảng đã sắp xếp |
+| Mục tiêu                  | Code                                        | Kết quả          |
+| ------------------------- | ------------------------------------------- | ---------------- |
+| **Tổng** tất cả rate      | `list.reduce((sum, i) => sum + i.rate, 0)`  | Số tổng          |
+| **Trung bình** rate       | `list.reduce(...) / list.length`            | Số thập phân     |
+| **Lọc** rate >= 7         | `list.filter(i => i.rate >= 7)`             | Mảng mới         |
+| **Max** rate              | `Math.max(...list.map(i => i.rate))`        | Giá trị lớn nhất |
+| **Min** rate              | `Math.min(...list.map(i => i.rate))`        | Giá trị nhỏ nhất |
+| **Đếm** phim rate cao     | `list.filter(i => i.rate >= 8).length`      | Số đếm           |
+| **Sắp xếp** rate giảm dần | `[...list].sort((a, b) => b.rate - a.rate)` | Mảng đã sắp xếp  |
+| **Sắp xếp** rate tăng dần | `[...list].sort((a, b) => a.rate - b.rate)` | Mảng đã sắp xếp  |
 
 ---
 
@@ -200,11 +210,14 @@ const formatUS = price.toLocaleString("en-US");
         ## 🔽 4. `Form.Select` (dropdown)
         
         ```jsx
-        <Form.Select aria-label="Chọn danh mục">
-          <option>Chọn...</option>
-          <option value="1">Điện thoại</option>
-          <option value="2">Laptop</option>
-        </Form.Select>
+                  <Form.Select style={{ maxWidth: "150px" }} value={selectedSu} onChange={(e) => setSelectedSu(e.target.value)}>
+                            <option value="">All Status</option>
+                            {[...new Set(listSubjects.map(su => su.status))].map(status => (
+                                <option key={status} value={status}>
+                                    {status}
+                                </option>
+                            ))}
+                        </Form.Select>
         ```
         
         ---
@@ -215,6 +228,24 @@ const formatUS = price.toLocaleString("en-US");
             
             ```jsx
             <Form.Check type="checkbox" label="Ghi nhớ đăng nhập" />
+
+            ```
+                ```jsx
+                 <Form>
+                                {listMovie.map((movie) => (
+                                    <Form.Check
+                                        key={movie.id}
+                                        type="checkbox"
+                                        name="movie"
+                                        label={movie.name}
+                                        value={movie.name}
+                                        onChange={(e) =>
+                                            setMovieFilter(e.target.value)
+                                        }
+                                    />
+                                ))}
+                            </Form>
+
             ```
             
         - Radio:
@@ -228,6 +259,26 @@ const formatUS = price.toLocaleString("en-US");
               id="male"
             />
             ```
+            ```javascript
+                            <Form>
+                                {listMovie.map((movie) => (
+                                    <Form.Check
+                                        key={movie.id}
+                                        type="radio"
+                                        name="movie"
+                                        label={movie.name}
+                                        value={movie.name}
+                                        onChange={(e) =>
+                                            setMovieFilter(e.target.value)
+                                        }
+                                    />
+                                ))}
+                            </Form>
+```
+        <!-- ví dụ 
+        -->
+        
+
 
 ---
 
@@ -246,15 +297,14 @@ Khi đi thi, giảng viên rất hay yêu cầu web phải co giãn (Responsive)
 
 ```javascript
 import { Container, Row, Col } from 'react-bootstrap';
-
+// 1 row thì có 12 cột vì cậy ở col chia cho hợp lí ví dụ 2 col thì chỉnh sao để cộng 2 col bằng 12
 export const LayoutExample = () => (
-    <Container fluid="md"> {/* fluid="md": Mở rộng full màn hình trừ khi ở màn hình md (máy tính) trở lên */}
-        <Row className="mb-3">
-            {/* Cột chiếm 8/12 phần ở màn hình to, và full 12 phần ở Mobile */}
-            <Col xs={12} md={8} className="bg-primary text-white p-3">
+    <Container fluid="md"> 
+         <Row className="mb-3"> 
+            <Col md={5} >
                 Khu vực Danh sách
             </Col>
-            <Col xs={6} md={4} className="bg-secondary text-white p-3">
+            <Col md={7}>
                 Khu vực Form
             </Col>
         </Row>
@@ -465,13 +515,13 @@ export const LocBangRadio = () => {
 
 **💡 Tips quan trọng khi dùng Radio lọc:**
 
-| Điểm cần nhớ | Giải thích |
-|---|---|
-| `name="boLoc"` phải giống nhau | Các radio cùng `name` mới thành 1 nhóm — chỉ chọn được 1 cái |
-| `value` của radio = giá trị để so sánh | `value="laptop"` → filter sẽ bằng `"laptop"` → lọc ra `loai === 'laptop'` |
-| `onChange={e => setFilter(e.target.value)}` | Lệnh bắt sự kiện bấm — **mỗi radio phải có dòng này** |
-| `defaultChecked` | Đánh dấu radio nào được chọn sẵn lúc mới mở trang |
-| Lọc với API | Thay `danhSachSP` bằng state từ `useState` sau khi gọi `axios.get()` |
+| Điểm cần nhớ                                | Giải thích                                                                |
+| ------------------------------------------- | ------------------------------------------------------------------------- |
+| `name="boLoc"` phải giống nhau              | Các radio cùng `name` mới thành 1 nhóm — chỉ chọn được 1 cái              |
+| `value` của radio = giá trị để so sánh      | `value="laptop"` → filter sẽ bằng `"laptop"` → lọc ra `loai === 'laptop'` |
+| `onChange={e => setFilter(e.target.value)}` | Lệnh bắt sự kiện bấm — **mỗi radio phải có dòng này**                     |
+| `defaultChecked`                            | Đánh dấu radio nào được chọn sẵn lúc mới mở trang                         |
+| Lọc với API                                 | Thay `danhSachSP` bằng state từ `useState` sau khi gọi `axios.get()`      |
 
 ### 10. Range (Thanh trượt)
 ```javascript
@@ -708,156 +758,30 @@ Cực kì hay dùng để hiển thị 1 món hàng trong Danh sách Sản phẩ
 import { Card, Button } from 'react-bootstrap';
 
 export const CardExample = () => (
-    <Card style={{ width: '18rem' }} className="shadow-sm">
+    <Card className="shadow-sm h-100">
         <Card.Img variant="top" src="https://via.placeholder.com/300x200" />
-        <Card.Body>
-            <Card.Title>Điện thoại iPhone 15</Card.Title>
+        <Card.Body className="d-flex flex-column">
+            <Card.Title className="text-center">Điện thoại iPhone 15</Card.Title>
             <Card.Text>
                 Hàng chính hãng VN/A, bảo hành 12 tháng.
             </Card.Text>
-            <Button variant="primary" className="w-100">Mua ngay</Button>
+            <Button variantB="primary" className="w-100">Mua ngay</Button>
         </Card.Body>
     </Card>
 )
 ```
 
-#### 🔥 Card GỌI API — Hiển thị danh sách từ server (dùng `axios`)
-Thay vì viết cứng nội dung, ta gọi API bằng `axios` rồi dùng `.map()` để render tự động từng Card.
-
-> **Cài đặt trước:** `npm install axios`
-
-**Luồng hoạt động:**
-```
-Component mount → useEffect chạy → axios.get() → .then(res) → setProducts(res.data) → React re-render → .map() → hiển thị Card
-```
-
-```javascript
-import axios from 'axios';
-import { useState, useEffect } from 'react';
-import { Card, Button, Row, Col, Spinner } from 'react-bootstrap';
-
-export const ProductList = () => {
-    const [products, setProducts] = useState([]);   // Luôn khởi tạo mảng rỗng []
-    const [loading, setLoading] = useState(true);
-
-    useEffect(() => {
-        axios.get('https://your-api.com/products')  // Thay URL thật vào đây
-            .then(res => {
-                setProducts(res.data);              // axios tự parse JSON → lấy qua res.data
-                setLoading(false);
-            })
-            .catch(err => {
-                console.error(err);
-                setLoading(false);
-            });
-    }, []); // [] = chỉ chạy 1 lần khi component vừa mount
-
-    if (loading) return <Spinner animation="border" />;
-
-    return (
-              <Col md={10} style={{ paddingRight: "100px" }}>
-                        <Row>
-                            {products.map((product) => (
-                                <Col
-                                    key={product.id}
-                                    md={3}
-                                    sm={6}
-                                    xs={12}
-                                    className="mb-4"
-                                >
-                                    <Card className="shadow-sm h-100">
-                                        <div
-                                            style={{
-                                                height: "100%",
-                                                width: "100%",
-                                            }}
-                                        >
-                                            <Card.Img
-                                                variant="top"
-                                                src={`./images/${product.image}`}
-                                                style={{
-                                                    width: "100%",
-                                                    height: "100%",
-                                                    objectFit: "contain"
-                                                }}
-                                            />
-                                        </div>
-
-                                        <Card.Body className="d-flex flex-column">
-                                            <Card.Title className="text-center">
-                                                {product.title}
-                                            </Card.Title>
-
-                                            <Card.Text>
-                                                <Card.Text style={{ margin: "20px 5px" }}>
-                                                    Brand:{" "}
-                                                    <strong>
-                                                        {product.brandName}
-                                                    </strong>
-                                                    <br />
-
-                                                    Category:{" "}
-                                                    <strong>
-                                                        {product.categoryName}
-                                                    </strong>
-                                                </Card.Text>
-                                                <div style={{ display: "grid", justifyContent: "center" }}>
-                                                    <p
-                                                        style={{
-                                                            color: "blue",
-                                                            textDecoration:
-                                                                "line-through"
-                                                        }}
-                                                    >
-                                                        Price: ${product.price}
-                                                    </p>
-                                                    <p
-                                                        style={{
-                                                            color: "red",
-
-                                                        }}
-                                                    >
-                                                        Discount: {product.discountPercentage}%
-                                                    </p>
-                                                    <p
-                                                        style={{
-                                                            color: "blue",
-
-                                                        }}
-                                                    >
-                                                        New price: ${product.newPrice}
-                                                    </p>
 
 
-                                                </div>
-
-
-                                            </Card.Text>
-                                            <div style={{ display: "flex", justifyContent: "center" }}>
-                                                <Button style={{ backgroundColor: "green", color: "white", border: "none", width: "30%" }}>
-
-                                                    View Details
-                                                </Button>
-                                            </div>
-
-
-                                        </Card.Body>
-                                    </Card>
-                                </Col>
-                            ))}
-                        </Row>
-                    </Col>
-    )
-```
 
 **💡 Tips hay gặp:**
 
-| Vấn đề | Giải pháp |
-|---|---|
-| API trả về `{ data: [...] }` lồng bên trong | Dùng `res.data.data` thay vì `res.data` |
-| Ảnh bị lỗi 404 | Thêm `onError={e => e.target.src = 'placeholder.png'}` vào `<Card.Img>` |
-| Mảng rỗng lúc đầu gây lỗi `.map` | Luôn khởi tạo `useState([])` — **KHÔNG** để `useState(null)` |
-| Card cao thấp không đều nhau | Thêm `h-100` vào `<Card>` và `d-flex flex-column` vào `<Row>` |
+| Vấn đề                                      | Giải pháp                                                               |
+| ------------------------------------------- | ----------------------------------------------------------------------- |
+| API trả về `{ data: [...] }` lồng bên trong | Dùng `res.data.data` thay vì `res.data`                                 |
+| Ảnh bị lỗi 404                              | Thêm `onError={e => e.target.src = 'placeholder.png'}` vào `<Card.Img>` |
+| Mảng rỗng lúc đầu gây lỗi `.map`            | Luôn khởi tạo `useState([])` — **KHÔNG** để `useState(null)`            |
+| Card cao thấp không đều nhau                | Thêm `h-100` vào `<Card>` và `d-flex flex-column` vào `<Row>`           |
 
 ### 18. Dropdowns (Nút thả menu)
 ```javascript
@@ -1035,12 +959,12 @@ Khi **không dùng Flexbox**, có 3 cách phổ biến để đẩy một thứ 
 
 #### 📊 BẢNG SO SÁNH NHANH — Khi nào dùng cái gì?
 
-| Tình huống thực tế | Dùng cái gì | CSS Inline | Bootstrap Class |
-|---|---|---|---|
-| Căn nút / chữ sang phải trong 1 dòng | `text-align: end` | `textAlign: 'end'` | `text-end` |
-| Đẩy badge/hình nổi sang phải, chữ chảy vòng | `float: right` | `float: 'right'` | `float-end` |
-| Ghim cứng 1 nút vào góc (nút X, badge số) | `position: absolute` | `position: 'absolute', right: '0'` | `position-absolute top-0 end-0` |
-| Đẩy nút sang phải trong thanh ngang | `margin-left: auto` + flex | `marginLeft: 'auto'` | `ms-auto` (cần `d-flex`) |
+| Tình huống thực tế                          | Dùng cái gì                | CSS Inline                         | Bootstrap Class                 |
+| ------------------------------------------- | -------------------------- | ---------------------------------- | ------------------------------- |
+| Căn nút / chữ sang phải trong 1 dòng        | `text-align: end`          | `textAlign: 'end'`                 | `text-end`                      |
+| Đẩy badge/hình nổi sang phải, chữ chảy vòng | `float: right`             | `float: 'right'`                   | `float-end`                     |
+| Ghim cứng 1 nút vào góc (nút X, badge số)   | `position: absolute`       | `position: 'absolute', right: '0'` | `position-absolute top-0 end-0` |
+| Đẩy nút sang phải trong thanh ngang         | `margin-left: auto` + flex | `marginLeft: 'auto'`               | `ms-auto` (cần `d-flex`)        |
 
 ### 25. Flex (Bố cục dàn trang linh hoạt)
 Bắt buộc phải có `d-flex` đứng đầu.
@@ -1052,12 +976,12 @@ Bắt buộc phải có `d-flex` đứng đầu.
 
 Đây là kỹ thuật đỉnh nhất trong Flexbox: Dùng `marginLeft: 'auto'` để **ép** một phần tử văng tận sang phải, hoặc `marginTop: 'auto'` để đẩy xuống tận đáy.
 
-| Tình huống | CSS Inline cần dùng | Class Bootstrap tương đương |
-|---|---|---|
-| Đẩy sang **phải** (cuối hàng ngang) | `style={{ marginLeft: 'auto' }}` | `ms-auto` |
-| Đẩy sang **trái** (cuối hàng từ phải) | `style={{ marginRight: 'auto' }}` | `me-auto` |
-| Đẩy xuống **đáy** (cuối cột dọc) | `style={{ marginTop: 'auto' }}` | `mt-auto` |
-| Đẩy lên **đỉnh** | `style={{ marginBottom: 'auto' }}` | `mb-auto` |
+| Tình huống                            | CSS Inline cần dùng                | Class Bootstrap tương đương |
+| ------------------------------------- | ---------------------------------- | --------------------------- |
+| Đẩy sang **phải** (cuối hàng ngang)   | `style={{ marginLeft: 'auto' }}`   | `ms-auto`                   |
+| Đẩy sang **trái** (cuối hàng từ phải) | `style={{ marginRight: 'auto' }}`  | `me-auto`                   |
+| Đẩy xuống **đáy** (cuối cột dọc)      | `style={{ marginTop: 'auto' }}`    | `mt-auto`                   |
+| Đẩy lên **đỉnh**                      | `style={{ marginBottom: 'auto' }}` | `mb-auto`                   |
 
 ```javascript
 // 🎯 VÍ DỤ 1: Navbar - Logo bên trái, Nút Đăng nhập đẩy sang tận phải

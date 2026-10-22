@@ -23,49 +23,49 @@ export default instance;
 ## 2. CHUẨN BỊ CONTEXT API (`context/ContextProvider.js`)
 Lưu toàn bộ dữ liệu vào `BoxProvider` ngay từ lúc chạy app.
 ```javascript
-import { createContext, useState, useEffect } from 'react';
-import instance from '../utils';
+import { createContext, useEffect, useState } from "react"
+import instance from "../utils";
+
 
 export const BoxProvider = createContext();
 
 export const ContextProvider = ({ children }) => {
-  const [listItems, setListItems] = useState([]);
-  const [listCategories, setListCategories] = useState([]);
+    const [listRecipes, setListRecipes] = useState([]);
 
-  useEffect(() => {
-    // Lấy dữ liệu 1 lần duy nhất khi app chạy
-    instance.get('/items').then((res) => setListItems(res.data)).catch(err => console.log(err));
-    instance.get('/categories').then((res) => setListCategories(res.data)).catch(err => console.log(err));
-  }, []);
+    //Call api va lay ra du lieu
+    useEffect(() => {
+        instance.get("/recipes").then((res) => {
+            setListRecipes(res.data)
+        })
 
-  return (
-    <BoxProvider.Provider value={{ listItems, setListItems, listCategories, setListCategories }}>
-      {children}
-    </BoxProvider.Provider>
-  );
-};
+    }, [])
+
+    return (
+        <BoxProvider.Provider
+            value={{
+                listRecipes: listRecipes, setListRecipes: setListRecipes,
+            }}>
+            {children}
+        </BoxProvider.Provider>
+    )
+}
 ```
 ---
 
-## 6. APP.JS (ROUTING CƠ BẢN ĐỂ GẮN KẾT CÁC CRUD)
+## 3. APP.JS (ROUTING CƠ BẢN ĐỂ GẮN KẾT CÁC CRUD)
 ```javascript
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { ContextProvider } from './context/ContextProvider';
 import ListItems from './components/ListItems';
-import AddItem from './components/AddItem';
-import EditItem from './components/EditItem';
+
 
 function App() {
   return (
     <ContextProvider>
       <BrowserRouter>
-        <div className="container mt-4">
           <Routes>
             <Route path="/" element={<ListItems />} />
-            <Route path="/add" element={<AddItem />} />
-            <Route path="/edit/:id" element={<EditItem />} />
-          </Routes>
-        </div>
+            </ <Routes>>
       </BrowserRouter>
     </ContextProvider>
   );
@@ -287,195 +287,7 @@ const handleSubmit = async (e) => {
     <p>Please select a product!</p>
 )}
 ```
----
 
-
-
-
-
-## 1. ĐỀ FA 24 - Giao diện CARD (Sản phẩm) & Lọc Radio
-```javascript
-import { useContext, useState } from "react"
-import { Button, Card, Col, Container, Form, Row } from "react-bootstrap"
-import { BoxProvider } from "../context/ContextProvider"
-import { useNavigate } from "react-router-dom"
-
-export const Product = () => {
-    const navigate = useNavigate()
-    const { listProduct, listBrand, listCategory } = useContext(BoxProvider)
-    // tạo 2 biến state để tí gender giao diện
-    const [categoryFilter, setCategoryFilter] = useState("");
-    const [brandFilter, setBrandFilter] = useState("");
-    // Bước 1: Ghép nối dữ liệu (Join) - lặp qua mảng product gốc để thêm brandName và categoryName
-    const newProductList = listProduct.map((product) => {
-        // Tìm tên Brand dựa trên brand ID của product
-        const brandName = listBrand.find((b) => b.id == product.brand)
-        // Tìm tên Category dựa trên category ID của product
-        const categoryName = listCategory.find((c) => c.id == product.category)
-        // Tính toán giá mới sau khi giảm giá (làm tròn)
-        const newPrice = Math.round(product.price - (product.price * product.discountPercentage / 100))
-        return {
-            ...product, // Giữ nguyên các thuộc tính cũ
-            brandName: `${brandName.name}`, // Thêm thuộc tính mới
-            categoryName: `${categoryName.name}`,
-            newPrice: newPrice
-        };
-    })
-    
-    // Bước 2: Lọc dữ liệu hiển thị theo Category và Brand người dùng chọn từ Radio Button
-    const listProductFinal = newProductList.filter((product) => {
-        // Kiểm tra xem tên category/brand của sản phẩm có chứa từ khóa người dùng chọn không (đưa về chữ thường)
-        const checkCategory = product.categoryName.toLowerCase().includes(categoryFilter.toLowerCase())
-        const checkBrand = product.brandName.toLowerCase().includes(brandFilter.toLowerCase())
-        // Thỏa mãn cả 2 điều kiện thì giữ lại
-        return checkCategory && checkBrand;
-    })
-    return (
-        <>
-            {/* header */}
-            <div>
-                <h1 style={{ textAlign: "center", marginBottom: "30px" }}>List of Products</h1>
-            </div>
-            {/* body */}
-            <Container fluid >
-                <Row >
-                    {/* phan 1 */}
-                    <Col xs={2} style={{ paddingLeft: "80px" }} >
-                        {/* cuisine */}
-                        <div>
-                            <h3>Categories</h3>
-                            <Form>
-                                {listCategory.map((category) => (
-                                    <Form.Check
-                                        key={category.id}
-                                        type="radio"
-                                        name="category"
-                                        label={category.name}
-                                        value={category.name}
-                                        onChange={(e) => setCategoryFilter(e.target.value)}
-
-                                    />
-                                ))}
-                            </Form>
-                        </div>
-                        {/* meal type */}
-                        <div>
-                            <h3>Brands</h3>
-                            <Form>
-                                {listBrand.map((brand) => (
-                                    <Form.Check
-                                        key={brand.id}
-                                        type="radio"
-                                        name="brand"
-                                        label={brand.name}
-                                        value={brand.name}
-                                        onChange={(e) =>
-                                            setBrandFilter(e.target.value)
-                                        }
-                                    />
-                                ))}
-                            </Form>
-                        </div>
-                    </Col>
-                    {/* content */}
-                    <Col md={10} style={{ paddingRight: "100px" }}>
-                        <Row>
-                            {listProductFinal.map((product) => (
-                                <Col
-                                    key={product.id}
-                                    md={3}
-                                    sm={6}
-                                    xs={12}
-                                    className="mb-4"
-                                >
-                                    <Card className="shadow-sm h-100">
-                                        <div
-                                            style={{
-                                                height: "100%",
-                                                width: "100%",
-                                            }}
-                                        >
-                                            <Card.Img
-                                                variant="top"
-                                                src={`./images/${product.image}`}
-                                                style={{
-                                                    width: "100%",
-                                                    height: "100%",
-                                                    objectFit: "contain"
-                                                }}
-                                            />
-                                        </div>
-
-                                        <Card.Body className="d-flex flex-column">
-                                            <Card.Title className="text-center">
-                                                {product.title}
-                                            </Card.Title>
-
-                                            <Card.Text>
-                                                <Card.Text style={{ margin: "20px 5px" }}>
-                                                    Brand:{" "}
-                                                    <strong>
-                                                        {product.brandName}
-                                                    </strong>
-                                                    <br />
-
-                                                    Category:{" "}
-                                                    <strong>
-                                                        {product.categoryName}
-                                                    </strong>
-                                                </Card.Text>
-                                                <div style={{ display: "grid", justifyContent: "center" }}>
-                                                    <p
-                                                        style={{
-                                                            color: "blue",
-                                                            textDecoration:
-                                                                "line-through"
-                                                        }}
-                                                    >
-                                                        Price: ${product.price}
-                                                    </p>
-                                                    <p
-                                                        style={{
-                                                            color: "red",
-
-                                                        }}
-                                                    >
-                                                        Discount: {product.discountPercentage}%
-                                                    </p>
-                                                    <p
-                                                        style={{
-                                                            color: "blue",
-
-                                                        }}
-                                                    >
-                                                        New price: ${product.newPrice}
-                                                    </p>
-
-
-                                                </div>
-
-
-                                            </Card.Text>
-                                            <div style={{ display: "flex", justifyContent: "center" }}>
-                                                <Button onClick={() => navigate(`/product/${product.id}`)} type="button" style={{ backgroundColor: "green", color: "white", border: "none", width: "30%" }}>
-
-                                                    View Details
-                                                </Button>
-                                            </div>
-
-
-                                        </Card.Body>
-                                    </Card>
-                                </Col>
-                            ))}
-                        </Row>
-                    </Col>
-                </Row >
-            </Container >
-        </>
-
-    )
-}
 ```
 
 ## 4. ĐỀ FA24BL5 - Giao diện MASTER-DETAIL (Xem chi tiết & Thêm Review trên cùng trang)
@@ -1466,43 +1278,33 @@ const listRecipesFinal = listRecipes.filter((item) => {
     <Form.Check key={value} type="checkbox"
         id={`cuisine-${value.toLowerCase()}`}
         label={value}
-        checked={selectedCuisines.includes(value)}
+        checked={select
+        
+        edCuisines.includes(value)}
         onChange={() => toggleItem(value, setSelectedCuisines)} />
 ))}
 ```
 ---
 
 
-## [FA 24] LOC RADIO BUTTON (category + brand la bang rieng)
+
 
 ```javascript
-// B1: State loc
-const [categoryFilter, setCategoryFilter] = useState("");
-const [brandFilter, setBrandFilter] = useState("");
-
-// B2: JOIN 2 bang + tinh gia moi
-const newProductList = listProduct.map((product) => {
-    const brandName = listBrand.find((b) => b.id == product.brand)       // == khong ===
-    const categoryName = listCategory.find((c) => c.id == product.category)
-    const newPrice = Math.round(product.price - (product.price * product.discountPercentage / 100))
-    return { ...product, brandName: brandName.name, categoryName: categoryName.name, newPrice }
-})
-
-// B3: filter
-const listProductFinal = newProductList.filter((product) => {
-    const checkCategory = product.categoryName.toLowerCase().includes(categoryFilter.toLowerCase())
-    const checkBrand = product.brandName.toLowerCase().includes(brandFilter.toLowerCase())
-    return checkCategory && checkBrand
-})
-
-// B4: Render radio (name giong nhau = cung nhom, chon 1)
-<Form>
-    {listCategory.map((category) => (
-        <Form.Check key={category.id} type="radio" name="category"
-            label={category.name} value={category.name}
-            onChange={(e) => setCategoryFilter(e.target.value)} />
-    ))}
-</Form>
+// form.check
+                            <Form>
+                                {listMovie.map((movie) => (
+                                    <Form.Check
+                                        key={movie.id}
+                                        type="radio"
+                                        name="movie"
+                                        label={movie.name}
+                                        value={movie.name}
+                                        onChange={(e) =>
+                                            setMovieFilter(e.target.value)
+                                        }
+                                    />
+                                ))}
+                            </Form>
 ```
 ---
 

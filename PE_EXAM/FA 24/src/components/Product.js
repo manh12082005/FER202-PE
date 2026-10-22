@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom"
 export const Product = () => {
     const navigate = useNavigate()
     const { listProduct, listBrand, listCategory } = useContext(BoxProvider)
-    // tạo 2 biến state để tí gender giao diện
+    // B1:tạo 2 biến state để tí gender giao diện
     const [categoryFilter, setCategoryFilter] = useState("");
     const [brandFilter, setBrandFilter] = useState("");
     //lấy ra các thuộc tính của product
@@ -16,14 +16,14 @@ export const Product = () => {
         const newPrice = Math.round(product.price - (product.price * product.discountPercentage / 100))
         return {
             ...product,
-            brandName: `${brandName.name}`,
-            categoryName: `${categoryName.name}`,
+            brandName: brandName.name,
+            categoryName: categoryName.name,
             newPrice: newPrice
         };
 
     })
+    //B3:lọc theo category và brand
     const listProductFinal = newProductList.filter((product) => {
-        //lọc theo category và brand
         const checkCategory = product.categoryName.toLowerCase().includes(categoryFilter.toLowerCase())
         const checkBrand = product.brandName.toLowerCase().includes(brandFilter.toLowerCase())
         return checkCategory && checkBrand;
@@ -38,7 +38,7 @@ export const Product = () => {
             <Container fluid >
                 <Row >
                     {/* phan 1 */}
-                    <Col xs={2} style={{ paddingLeft: "80px" }} >
+                    <Col xs={2} style={{ paddingLeft: "60px" }} >
                         {/* cuisine */}
                         <div>
                             <h3>Categories</h3>
@@ -51,7 +51,7 @@ export const Product = () => {
                                         label={category.name}
                                         value={category.name}
                                         onChange={(e) => setCategoryFilter(e.target.value)}
-
+                                    // B2: viết event onChange bắt sự kiện thay đổi người dùng chọn
                                     />
                                 ))}
                             </Form>
@@ -109,53 +109,52 @@ export const Product = () => {
                                                 {product.title}
                                             </Card.Title>
 
-                                            <Card.Text>
-                                                <Card.Text style={{ margin: "20px 5px" }}>
-                                                    Brand:{" "}
-                                                    <strong>
-                                                        {product.brandName}
-                                                    </strong>
-                                                    <br />
+                                            <Card.Text style={{ margin: "20px 5px" }}>
+                                                Brand:{" "}
+                                                <strong>
+                                                    {product.brandName}
+                                                </strong>
+                                                <br />
 
-                                                    Category:{" "}
-                                                    <strong>
-                                                        {product.categoryName}
-                                                    </strong>
-                                                </Card.Text>
-                                                <div style={{ display: "grid", justifyContent: "center" }}>
-                                                    <p
-                                                        style={{
-                                                            color: "blue",
-                                                            textDecoration:
-                                                                "line-through"
-                                                        }}
-                                                    >
-                                                        Price: ${product.price}
-                                                    </p>
-                                                    <p
-                                                        style={{
-                                                            color: "red",
-
-                                                        }}
-                                                    >
-                                                        Discount: {product.discountPercentage}%
-                                                    </p>
-                                                    <p
-                                                        style={{
-                                                            color: "blue",
-
-                                                        }}
-                                                    >
-                                                        New price: ${product.newPrice}
-                                                    </p>
-
-
-                                                </div>
-
-
+                                                Category:{" "}
+                                                <strong>
+                                                    {product.categoryName}
+                                                </strong>
                                             </Card.Text>
+                                            <div style={{ display: "grid", justifyContent: "center" }}>
+                                                <p
+                                                    style={{
+                                                        color: "blue",
+                                                        textDecoration:
+                                                            "line-through"
+                                                    }}
+                                                >
+                                                    Price: ${product.price}
+                                                </p>
+                                                <p
+                                                    style={{
+                                                        color: "red",
+
+                                                    }}
+                                                >
+                                                    Discount: {product.discountPercentage}%
+                                                </p>
+                                                <p
+                                                    style={{
+                                                        color: "blue",
+
+                                                    }}
+                                                >
+                                                    New price: ${product.newPrice}
+                                                </p>
+
+
+                                            </div>
+
+
+
                                             <div style={{ display: "flex", justifyContent: "center" }}>
-                                                <Button onClick={() => navigate(`/product/${product.id}`)} type="button" style={{ backgroundColor: "green", color: "white", border: "none", width: "30%" }}>
+                                                <Button onClick={() => navigate(`/product/${product.id}`)} type="button" style={{ backgroundColor: "green", color: "white", border: "none", width: "70%" }}>
 
                                                     View Details
                                                 </Button>
