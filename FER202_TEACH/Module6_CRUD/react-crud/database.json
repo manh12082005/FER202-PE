@@ -1,0 +1,9 @@
+{
+    "products": [
+        { "id": 1, "name": "iPhone 15",          "price": 25000000, "category": "Điện thoại" },
+        { "id": 2, "name": "Samsung Galaxy S24", "price": 22000000, "category": "Điện thoại" },
+        { "id": 3, "name": "MacBook Air M2",     "price": 35000000, "category": "Laptop" },
+        { "id": 4, "name": "iPad Pro 12.9",      "price": 28000000, "category": "Tablet" },
+        { "id": 5, "name": "AirPods Pro",        "price": 6000000,  "category": "Phụ kiện" }
+    ]
+}

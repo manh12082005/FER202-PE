@@ -1,0 +1,1010 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CSS Inline & Flexbox – Học React FER202</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0d1117;
+      --surface: #161b22;
+      --card: #1e2530;
+      --border: #30363d;
+      --accent: #58a6ff;
+      --accent2: #f78166;
+      --accent3: #3fb950;
+      --accent4: #d2a8ff;
+      --accent5: #ffa657;
+      --text: #e6edf3;
+      --text-muted: #8b949e;
+      --text-dim: #6e7681;
+      --react: #61dafb;
+      --tag-bg: rgba(88,166,255,0.12);
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* HEADER */
+    .header {
+      background: linear-gradient(135deg, #0d1117 0%, #1a1f35 50%, #0d1117 100%);
+      border-bottom: 1px solid var(--border);
+      padding: 48px 32px 40px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .header::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse 80% 60% at 50% -20%, rgba(88,166,255,0.15), transparent);
+      pointer-events: none;
+    }
+    .badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--tag-bg); border: 1px solid rgba(88,166,255,0.3);
+      border-radius: 24px; padding: 6px 16px;
+      font-size: 13px; font-weight: 500; color: var(--accent);
+      margin-bottom: 20px;
+    }
+    .badge-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent3); animation: pulse 2s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1;transform:scale(1);} 50%{opacity:.5;transform:scale(1.3);} }
+
+    h1.main-title {
+      font-size: clamp(28px, 5vw, 48px); font-weight: 800;
+      line-height: 1.2; margin-bottom: 16px;
+    }
+    .gradient-text {
+      background: linear-gradient(135deg, var(--react), var(--accent4));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .subtitle {
+      font-size: 16px; color: var(--text-muted); max-width: 560px;
+      margin: 0 auto; line-height: 1.7;
+    }
+
+    /* LAYOUT */
+    .container { max-width: 1100px; margin: 0 auto; padding: 48px 24px; }
+    .section-title {
+      font-size: 22px; font-weight: 700; color: var(--text);
+      margin-bottom: 8px; display: flex; align-items: center; gap: 10px;
+    }
+    .section-desc { color: var(--text-muted); font-size: 14px; margin-bottom: 24px; }
+    .section-sep { height: 1px; background: var(--border); margin: 48px 0; }
+
+    /* CODE BLOCK */
+    .code-block {
+      background: #0d1117; border: 1px solid var(--border);
+      border-radius: 12px; overflow: hidden;
+    }
+    .code-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 12px 20px; background: var(--surface);
+      border-bottom: 1px solid var(--border);
+    }
+    .code-dots { display: flex; gap: 7px; }
+    .code-dot { width: 12px; height: 12px; border-radius: 50%; }
+    .cd-red { background: #ff5f57; } .cd-yellow { background: #ffbd2e; } .cd-green { background: #28ca41; }
+    .code-lang { font-size: 12px; color: var(--text-dim); font-family: 'Fira Code', monospace; }
+    .code-block pre {
+      padding: 24px; overflow-x: auto;
+      font-family: 'Fira Code', monospace; font-size: 14px; line-height: 1.7;
+    }
+    .kw  { color: #ff79c6; }
+    .str { color: #f1fa8c; }
+    .prop{ color: #8be9fd; }
+    .val { color: #bd93f9; }
+    .cmt { color: #6272a4; font-style: italic; }
+    .tag { color: #ff5555; }
+    .attr{ color: #50fa7b; }
+    .fn  { color: #ffb86c; }
+
+    /* COMPARE */
+    .compare-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    @media (max-width: 680px) { .compare-grid { grid-template-columns: 1fr; } }
+    .compare-card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 12px; overflow: hidden;
+    }
+    .compare-head {
+      padding: 14px 20px; font-size: 13px; font-weight: 600;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .head-css   { background: rgba(247,129,102,0.12); color: var(--accent2); border-bottom: 1px solid rgba(247,129,102,0.2); }
+    .head-react { background: rgba(97,218,251,0.1);   color: var(--react);   border-bottom: 1px solid rgba(97,218,251,0.2); }
+    .compare-body { padding: 20px; }
+    .compare-body pre { font-family: 'Fira Code', monospace; font-size: 13px; line-height: 1.75; white-space: pre-wrap; }
+
+    /* TABLE */
+    .prop-table {
+      width: 100%; border-collapse: collapse;
+      background: var(--card); border-radius: 12px; overflow: hidden;
+      border: 1px solid var(--border);
+    }
+    .prop-table th {
+      background: var(--surface); padding: 14px 20px;
+      text-align: left; font-size: 13px; color: var(--text-muted);
+      font-weight: 600; border-bottom: 1px solid var(--border);
+    }
+    .prop-table td {
+      padding: 14px 20px; border-bottom: 1px solid rgba(48,54,61,0.5);
+      font-size: 14px; vertical-align: top; line-height: 1.6;
+    }
+    .prop-table tr:last-child td { border-bottom: none; }
+    .prop-table tr:hover td { background: rgba(255,255,255,0.02); }
+    .pill        { display:inline-block; background:var(--tag-bg); border:1px solid rgba(88,166,255,0.25); border-radius:6px; padding:2px 10px; font-family:'Fira Code',monospace; font-size:12px; color:var(--accent); }
+    .pill-green  { background:rgba(63,185,80,0.1);  border-color:rgba(63,185,80,0.25);  color:var(--accent3); }
+    .pill-purple { background:rgba(210,168,255,0.1);border-color:rgba(210,168,255,0.25);color:var(--accent4); }
+    .pill-orange { background:rgba(255,166,87,0.1); border-color:rgba(255,166,87,0.25); color:var(--accent5); }
+
+    /* DEMO */
+    .demo-section { background:var(--card); border:1px solid var(--border); border-radius:16px; overflow:hidden; }
+    .demo-tabs { display:flex; border-bottom:1px solid var(--border); background:var(--surface); }
+    .demo-tab {
+      padding:14px 24px; font-size:14px; font-weight:500;
+      color:var(--text-muted); cursor:pointer; border:none;
+      background:none; transition:all .2s; border-bottom:2px solid transparent;
+    }
+    .demo-tab.active { color:var(--accent); border-bottom-color:var(--accent); }
+    .demo-tab:hover:not(.active) { color:var(--text); }
+    .demo-pane { display:none; }
+    .demo-pane.active { display:block; }
+
+    /* PLAYGROUND */
+    .playground-wrap { display:grid; grid-template-columns:1fr 1fr; min-height:320px; }
+    @media(max-width:720px){ .playground-wrap{ grid-template-columns:1fr; } }
+    .play-controls { padding:28px; border-right:1px solid var(--border); display:flex; flex-direction:column; gap:16px; }
+    .control-label { font-size:12px; font-weight:600; color:var(--text-muted); margin-bottom:6px; text-transform:uppercase; letter-spacing:.05em; }
+    .control-group { background:var(--surface); border-radius:10px; padding:16px; }
+    .control-row { display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:10px; }
+    .control-row:last-child { margin-bottom:0; }
+    .control-name { font-size:13px; font-family:'Fira Code',monospace; color:var(--accent); }
+    select.ctrl-select {
+      background:var(--bg); border:1px solid var(--border);
+      border-radius:6px; color:var(--text); font-size:12px;
+      padding:5px 10px; font-family:'Fira Code',monospace; cursor:pointer; outline:none;
+    }
+    select.ctrl-select:focus { border-color:var(--accent); }
+    .play-preview { padding:24px; display:flex; flex-direction:column; gap:12px; background:#090c10; }
+    .preview-label { font-size:11px; color:var(--text-dim); text-transform:uppercase; letter-spacing:.08em; font-weight:600; }
+    .preview-box { flex:1; border:1px dashed var(--border); border-radius:10px; overflow:hidden; min-height:180px; display:flex; }
+    .preview-box-inner { width:100%; transition:all .3s ease; }
+    .preview-item { width:60px; height:60px; border-radius:8px; font-size:12px; font-weight:700; color:#fff; display:flex; align-items:center; justify-content:center; }
+    .pi-1 { background:linear-gradient(135deg,#667eea,#764ba2); }
+    .pi-2 { background:linear-gradient(135deg,#f78166,#f7513c); }
+    .pi-3 { background:linear-gradient(135deg,#3fb950,#1a7431); }
+    .preview-code { background:var(--surface); border:1px solid var(--border); border-radius:8px; padding:12px 16px; font-family:'Fira Code',monospace; font-size:12px; line-height:1.6; color:var(--text-muted); word-break:break-all; }
+
+    /* TIP CARDS */
+    .tip-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:16px; }
+    .tip-card { background:var(--card); border:1px solid var(--border); border-radius:12px; padding:20px; position:relative; overflow:hidden; }
+    .tip-card::before { content:''; position:absolute; top:0; left:0; right:0; height:3px; }
+    .tip-card.info::before  { background:var(--accent); }
+    .tip-card.warn::before  { background:var(--accent5); }
+    .tip-card.good::before  { background:var(--accent3); }
+    .tip-card.bad::before   { background:var(--accent2); }
+    .tip-icon  { font-size:22px; margin-bottom:10px; }
+    .tip-title { font-size:15px; font-weight:600; margin-bottom:8px; }
+    .tip-body  { font-size:13px; color:var(--text-muted); line-height:1.65; }
+    .tip-body code { font-family:'Fira Code',monospace; background:var(--surface); border-radius:4px; padding:1px 6px; font-size:12px; color:var(--accent); }
+
+    /* RULE LIST */
+    .rule-list { display:flex; flex-direction:column; gap:12px; }
+    .rule-item { display:flex; gap:14px; align-items:flex-start; background:var(--card); border:1px solid var(--border); border-radius:10px; padding:16px 20px; }
+    .rule-num { width:28px; height:28px; border-radius:50%; flex-shrink:0; display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:700; }
+    .rn-blue   { background:rgba(88,166,255,0.15);  color:var(--accent); }
+    .rn-purple { background:rgba(210,168,255,0.15); color:var(--accent4); }
+    .rn-green  { background:rgba(63,185,80,0.15);   color:var(--accent3); }
+    .rn-orange { background:rgba(255,166,87,0.15);  color:var(--accent5); }
+    .rule-text { font-size:14px; line-height:1.6; }
+    .rule-text strong { color:var(--text); }
+    .rule-text code { font-family:'Fira Code',monospace; font-size:12px; background:var(--surface); border-radius:4px; padding:1px 7px; color:var(--accent); }
+
+    /* QUICK REF */
+    .quick-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:12px; }
+    .quick-card { background:var(--card); border:1px solid var(--border); border-radius:10px; padding:16px; transition:border-color .2s,transform .2s; }
+    .quick-card:hover { border-color:var(--accent); transform:translateY(-2px); }
+    .quick-prop { font-family:'Fira Code',monospace; font-size:13px; color:var(--accent); font-weight:500; margin-bottom:4px; }
+    .quick-vals { font-size:12px; color:var(--text-dim); line-height:1.6; }
+
+    ::-webkit-scrollbar { width:6px; height:6px; }
+    ::-webkit-scrollbar-track { background:var(--bg); }
+    ::-webkit-scrollbar-thumb { background:var(--border); border-radius:3px; }
+
+    /* DIFF BADGE */
+    .diff-badge {
+      display:inline-flex; align-items:center; gap:6px;
+      border-radius:6px; padding:3px 10px; font-size:12px; font-weight:600; font-family:'Fira Code',monospace;
+    }
+    .diff-html  { background:rgba(247,129,102,0.15); color:var(--accent2); border:1px solid rgba(247,129,102,0.3); }
+    .diff-react { background:rgba(97,218,251,0.12);  color:var(--react);   border:1px solid rgba(97,218,251,0.3); }
+
+    /* GRID DEMO */
+    .grid-visual {
+      background:#090c10; border:1px solid var(--border);
+      border-radius:12px; padding:20px; overflow:hidden;
+    }
+    .gv-grid { display:grid; gap:8px; width:100%; }
+    .gv-cell {
+      border-radius:8px; padding:14px 12px;
+      font-size:12px; font-weight:700; font-family:'Fira Code',monospace;
+      display:flex; align-items:center; justify-content:center;
+      text-align:center; line-height:1.4;
+    }
+    .gc-1 { background:linear-gradient(135deg,#667eea,#764ba2); color:#fff; }
+    .gc-2 { background:linear-gradient(135deg,#f78166,#c0392b); color:#fff; }
+    .gc-3 { background:linear-gradient(135deg,#3fb950,#1a7431); color:#fff; }
+    .gc-4 { background:linear-gradient(135deg,#ffa657,#e67e22); color:#fff; }
+    .gc-5 { background:linear-gradient(135deg,#d2a8ff,#9b59b6); color:#fff; }
+    .gc-6 { background:linear-gradient(135deg,#58a6ff,#2980b9); color:#fff; }
+    .gc-dark { background:rgba(88,166,255,0.08); border:1px solid var(--border); color:var(--text-muted); }
+
+    /* GRID TABS */
+    .gtab-wrap { display:flex; gap:10px; flex-wrap:wrap; margin-bottom:20px; }
+    .gtab {
+      padding:8px 18px; border-radius:8px; border:1px solid var(--border);
+      background:var(--surface); color:var(--text-muted); font-size:13px;
+      cursor:pointer; font-weight:500; transition:all .2s;
+    }
+    .gtab.active { background:rgba(88,166,255,0.12); border-color:var(--accent); color:var(--accent); }
+    .gtab:hover:not(.active) { color:var(--text); }
+
+    /* AREA MAP */
+    .area-map {
+      display:grid;
+      grid-template-areas:
+        'header header header'
+        'sidebar main main'
+        'footer footer footer';
+      grid-template-rows: 60px 200px 50px;
+      grid-template-columns: 180px 1fr 1fr;
+      gap:8px; padding:20px; background:#090c10;
+      border:1px solid var(--border); border-radius:12px;
+    }
+    .am-header { grid-area:header; background:linear-gradient(135deg,#58a6ff,#2980b9); }
+    .am-sidebar { grid-area:sidebar; background:linear-gradient(135deg,#667eea,#764ba2); }
+    .am-main   { grid-area:main;    background:linear-gradient(135deg,#3fb950,#1a7431); }
+    .am-footer { grid-area:footer;  background:linear-gradient(135deg,#ffa657,#e67e22); }
+    .am-cell { border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:700; color:#fff; }
+  </style>
+</head>
+<body>
+
+<header class="header">
+  <div class="badge"><span class="badge-dot"></span>FER202 – React Frontend</div>
+  <h1 class="main-title">CSS Inline &amp; Grid System<br/><span class="gradient-text">Flexbox + CSS Grid Layout</span></h1>
+  <p class="subtitle">
+    Từ <strong>style="..."</strong> trong HTML, đến <strong>style={{ }}</strong> trong React,
+    và cả <strong>CSS Grid</strong> chia layout như Bootstrap — tất cả trong một trang.
+  </p>
+</header>
+
+<div class="container">
+
+  <!-- SECTION 1 -->
+  <h2 class="section-title"><span>🔄</span> CSS thường vs CSS inline trong React</h2>
+  <p class="section-desc">Cú pháp CSS viết trong file <code style="font-family:'Fira Code',monospace;background:var(--surface);padding:1px 6px;border-radius:4px;color:var(--accent)">.css</code> khác với khi viết trực tiếp trong JSX (inline style)</p>
+
+  <div class="compare-grid">
+    <div class="compare-card">
+      <div class="compare-head head-css">🎨 CSS thuần (file .css)</div>
+      <div class="compare-body">
+        <pre><span class="cmt">/* Dùng dấu gạch ngang "-" */</span>
+<span class="fn">.box</span> {
+  <span class="prop">display</span>: <span class="str">flex</span>;
+  <span class="prop">justify-content</span>: <span class="str">center</span>;
+  <span class="prop">align-items</span>: <span class="str">center</span>;
+  <span class="prop">background-color</span>: <span class="str">#61dafb</span>;
+  <span class="prop">font-size</span>: <span class="str">16px</span>;
+  <span class="prop">border-radius</span>: <span class="str">8px</span>;
+}</pre>
+      </div>
+    </div>
+    <div class="compare-card">
+      <div class="compare-head head-react">⚛️ CSS Inline trong React JSX</div>
+      <div class="compare-body">
+        <pre><span class="cmt">// Dùng camelCase, giá trị là string</span>
+<span class="kw">const</span> <span class="fn">style</span> = {
+  <span class="prop">display</span>: <span class="str">"flex"</span>,
+  <span class="prop">justifyContent</span>: <span class="str">"center"</span>,
+  <span class="prop">alignItems</span>: <span class="str">"center"</span>,
+  <span class="prop">backgroundColor</span>: <span class="str">"#61dafb"</span>,
+  <span class="prop">fontSize</span>: <span class="str">"16px"</span>,
+  <span class="prop">borderRadius</span>: <span class="str">"8px"</span>,
+};</pre>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-sep"></div>
+
+  <!-- SECTION 2 -->
+  <h2 class="section-title"><span>📏</span> 4 Quy tắc vàng khi viết CSS inline trong React</h2>
+  <p class="section-desc">Nắm vững 4 điều này là bạn không bao giờ bị lỗi khi dùng inline style</p>
+
+  <div class="rule-list">
+    <div class="rule-item">
+      <div class="rule-num rn-blue">1</div>
+      <div class="rule-text">
+        <strong>camelCase thay vì kebab-case (bỏ dấu <code>-</code>, viết hoa chữ tiếp theo):</strong><br/>
+        <code>background-color</code> → <code>backgroundColor</code> &nbsp;|&nbsp;
+        <code>justify-content</code> → <code>justifyContent</code><br/>
+        <code>align-items</code> → <code>alignItems</code> &nbsp;|&nbsp;
+        <code>border-radius</code> → <code>borderRadius</code>
+      </div>
+    </div>
+    <div class="rule-item">
+      <div class="rule-num rn-purple">2</div>
+      <div class="rule-text">
+        <strong>Giá trị là string <code>" "</code> hoặc number:</strong><br/>
+        <code>"flex"</code>, <code>"center"</code>, <code>"16px"</code>, <code>"#fff"</code> → đặt trong dấu nháy kép<br/>
+        <code>fontSize: 16</code> → số nguyên React tự thêm <code>px</code>
+      </div>
+    </div>
+    <div class="rule-item">
+      <div class="rule-num rn-green">3</div>
+      <div class="rule-text">
+        <strong>Dùng hai cặp ngoặc nhọn <code>{{ }}</code> khi viết trực tiếp trong JSX:</strong><br/>
+        Ngoặc ngoài <code>{ }</code> → biểu thức JavaScript trong JSX<br/>
+        Ngoặc trong <code>{ }</code> → object JavaScript chứa style
+      </div>
+    </div>
+    <div class="rule-item">
+      <div class="rule-num rn-orange">4</div>
+      <div class="rule-text">
+        <strong>Phân cách bằng dấu phẩy <code>,</code> (không phải <code>;</code>):</strong><br/>
+        Vì inline style là <strong>JavaScript object</strong>, không phải CSS text<br/>
+        <code>{ display: "flex", justifyContent: "center" }</code> ✅ đúng<br/>
+        <code>{ display: "flex"; justifyContent: "center" }</code> ❌ sai
+      </div>
+    </div>
+  </div>
+
+  <div class="section-sep"></div>
+
+  <!-- SECTION 3 -->
+  <h2 class="section-title"><span>✍️</span> 2 Cách viết CSS Inline trong JSX</h2>
+  <p class="section-desc">Cách 1 viết trực tiếp, Cách 2 tách biến – khuyến khích dùng Cách 2 cho code sạch hơn</p>
+
+  <div class="code-block" style="margin-bottom:20px;">
+    <div class="code-header">
+      <div class="code-dots"><div class="code-dot cd-red"></div><div class="code-dot cd-yellow"></div><div class="code-dot cd-green"></div></div>
+      <span class="code-lang">Cách 1 – Viết trực tiếp (Double curly braces {{ }})</span>
+    </div>
+    <pre><span class="kw">function</span> <span class="fn">App</span>() {
+  <span class="kw">return</span> (
+    <span class="tag">&lt;div</span>
+      <span class="attr">style</span>={{
+        <span class="prop">display</span>: <span class="str">"flex"</span>,
+        <span class="prop">justifyContent</span>: <span class="str">"center"</span>,
+        <span class="prop">alignItems</span>: <span class="str">"center"</span>,
+        <span class="prop">height</span>: <span class="str">"100vh"</span>,
+        <span class="prop">backgroundColor</span>: <span class="str">"#0d1117"</span>,
+      }}
+    <span class="tag">&gt;</span>
+      <span class="tag">&lt;h1</span> <span class="attr">style</span>={{ <span class="prop">color</span>: <span class="str">"#61dafb"</span>, <span class="prop">fontSize</span>: <span class="str">"32px"</span> }}<span class="tag">&gt;</span>Hello React!<span class="tag">&lt;/h1&gt;</span>
+    <span class="tag">&lt;/div&gt;</span>
+  );
+}</pre>
+  </div>
+
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-dots"><div class="code-dot cd-red"></div><div class="code-dot cd-yellow"></div><div class="code-dot cd-green"></div></div>
+      <span class="code-lang">Cách 2 – Tách ra biến const (Recommended ✅)</span>
+    </div>
+    <pre><span class="kw">function</span> <span class="fn">App</span>() {
+  <span class="cmt">// Khai báo style object bên ngoài return</span>
+  <span class="kw">const</span> containerStyle = {
+    <span class="prop">display</span>: <span class="str">"flex"</span>,
+    <span class="prop">justifyContent</span>: <span class="str">"center"</span>,    <span class="cmt">// căn giữa trục ngang (main axis)</span>
+    <span class="prop">alignItems</span>: <span class="str">"center"</span>,        <span class="cmt">// căn giữa trục dọc (cross axis)</span>
+    <span class="prop">height</span>: <span class="str">"100vh"</span>,
+    <span class="prop">gap</span>: <span class="str">"20px"</span>,                  <span class="cmt">// khoảng cách giữa các con</span>
+    <span class="prop">flexDirection</span>: <span class="str">"row"</span>,         <span class="cmt">// hướng: row | column</span>
+    <span class="prop">flexWrap</span>: <span class="str">"wrap"</span>,             <span class="cmt">// xuống dòng khi hết chỗ</span>
+    <span class="prop">backgroundColor</span>: <span class="str">"#0d1117"</span>,
+  };
+
+  <span class="kw">const</span> titleStyle = {
+    <span class="prop">color</span>: <span class="str">"#61dafb"</span>,
+    <span class="prop">fontSize</span>: <span class="str">"32px"</span>,
+    <span class="prop">fontWeight</span>: <span class="str">"bold"</span>,
+    <span class="prop">margin</span>: <span class="str">"0"</span>,
+  };
+
+  <span class="kw">return</span> (
+    <span class="tag">&lt;div</span> <span class="attr">style</span>={containerStyle}<span class="tag">&gt;</span>
+      <span class="tag">&lt;h1</span> <span class="attr">style</span>={titleStyle}<span class="tag">&gt;</span>Hello React!<span class="tag">&lt;/h1&gt;</span>
+    <span class="tag">&lt;/div&gt;</span>
+  );
+}</pre>
+  </div>
+
+  <div class="section-sep"></div>
+
+  <!-- SECTION 4: Live Demo -->
+  <h2 class="section-title"><span>🎮</span> Demo Tương Tác – Flexbox Playground</h2>
+  <p class="section-desc">Thay đổi giá trị và xem kết quả ngay lập tức</p>
+
+  <div class="demo-section">
+    <div class="demo-tabs">
+      <button class="demo-tab active" onclick="switchTab(event,'playground')">🎮 Playground</button>
+      <button class="demo-tab" onclick="switchTab(event,'examples')">📚 Ví dụ thực tế</button>
+    </div>
+
+    <div id="tab-playground" class="demo-pane active">
+      <div class="playground-wrap">
+        <div class="play-controls">
+          <div class="control-group">
+            <div class="control-label">Flexbox Properties</div>
+            <div class="control-row">
+              <span class="control-name">justifyContent</span>
+              <select class="ctrl-select" id="jc" onchange="updatePreview()">
+                <option value="center">center</option>
+                <option value="flex-start">flex-start</option>
+                <option value="flex-end">flex-end</option>
+                <option value="space-between">space-between</option>
+                <option value="space-around">space-around</option>
+                <option value="space-evenly">space-evenly</option>
+              </select>
+            </div>
+            <div class="control-row">
+              <span class="control-name">alignItems</span>
+              <select class="ctrl-select" id="ai" onchange="updatePreview()">
+                <option value="center">center</option>
+                <option value="flex-start">flex-start</option>
+                <option value="flex-end">flex-end</option>
+                <option value="stretch">stretch</option>
+                <option value="baseline">baseline</option>
+              </select>
+            </div>
+            <div class="control-row">
+              <span class="control-name">flexDirection</span>
+              <select class="ctrl-select" id="fd" onchange="updatePreview()">
+                <option value="row">row</option>
+                <option value="column">column</option>
+                <option value="row-reverse">row-reverse</option>
+                <option value="column-reverse">column-reverse</option>
+              </select>
+            </div>
+            <div class="control-row">
+              <span class="control-name">flexWrap</span>
+              <select class="ctrl-select" id="fw" onchange="updatePreview()">
+                <option value="nowrap">nowrap</option>
+                <option value="wrap">wrap</option>
+              </select>
+            </div>
+            <div class="control-row">
+              <span class="control-name">gap</span>
+              <select class="ctrl-select" id="gap" onchange="updatePreview()">
+                <option value="8px">8px</option>
+                <option value="16px" selected>16px</option>
+                <option value="24px">24px</option>
+                <option value="0px">0px</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="play-preview">
+          <div class="preview-label">🖥️ Kết quả</div>
+          <div class="preview-box">
+            <div class="preview-box-inner" id="preview-inner">
+              <div class="preview-item pi-1">1</div>
+              <div class="preview-item pi-2">2</div>
+              <div class="preview-item pi-3">3</div>
+            </div>
+          </div>
+          <div class="preview-label">📋 CSS Inline (React)</div>
+          <div class="preview-code" id="preview-code"></div>
+        </div>
+      </div>
+    </div>
+
+    <div id="tab-examples" class="demo-pane">
+      <div style="padding:28px;">
+        <div class="rule-list">
+          <div class="rule-item">
+            <div class="rule-num rn-blue">①</div>
+            <div class="rule-text" style="width:100%">
+              <strong>Căn giữa hoàn toàn (Full Center)</strong> – Dùng cho modal, loading spinner
+              <div class="code-block" style="margin-top:10px;">
+                <pre style="padding:14px;"><span class="kw">const</span> style = {
+  <span class="prop">display</span>: <span class="str">"flex"</span>,
+  <span class="prop">justifyContent</span>: <span class="str">"center"</span>,
+  <span class="prop">alignItems</span>: <span class="str">"center"</span>,
+  <span class="prop">height</span>: <span class="str">"100vh"</span>,
+};</pre>
+              </div>
+            </div>
+          </div>
+          <div class="rule-item">
+            <div class="rule-num rn-purple">②</div>
+            <div class="rule-text" style="width:100%">
+              <strong>Navbar ngang</strong> – logo bên trái, menu bên phải
+              <div class="code-block" style="margin-top:10px;">
+                <pre style="padding:14px;"><span class="kw">const</span> navStyle = {
+  <span class="prop">display</span>: <span class="str">"flex"</span>,
+  <span class="prop">justifyContent</span>: <span class="str">"space-between"</span>,
+  <span class="prop">alignItems</span>: <span class="str">"center"</span>,
+  <span class="prop">padding</span>: <span class="str">"0 24px"</span>,
+  <span class="prop">height</span>: <span class="str">"60px"</span>,
+};</pre>
+              </div>
+            </div>
+          </div>
+          <div class="rule-item">
+            <div class="rule-num rn-green">③</div>
+            <div class="rule-text" style="width:100%">
+              <strong>Card grid</strong> – các card xếp ngang, tự xuống dòng
+              <div class="code-block" style="margin-top:10px;">
+                <pre style="padding:14px;"><span class="kw">const</span> gridStyle = {
+  <span class="prop">display</span>: <span class="str">"flex"</span>,
+  <span class="prop">flexWrap</span>: <span class="str">"wrap"</span>,
+  <span class="prop">gap</span>: <span class="str">"16px"</span>,
+  <span class="prop">justifyContent</span>: <span class="str">"flex-start"</span>,
+};</pre>
+              </div>
+            </div>
+          </div>
+          <div class="rule-item">
+            <div class="rule-num rn-orange">④</div>
+            <div class="rule-text" style="width:100%">
+              <strong>Style động với State</strong> – thay đổi style theo biến state
+              <div class="code-block" style="margin-top:10px;">
+                <pre style="padding:14px;"><span class="kw">const</span> btnStyle = {
+  <span class="prop">backgroundColor</span>: isActive ? <span class="str">"#58a6ff"</span> : <span class="str">"#30363d"</span>,
+  <span class="prop">color</span>: isActive ? <span class="str">"#fff"</span> : <span class="str">"#8b949e"</span>,
+  <span class="prop">opacity</span>: isLoading ? <span class="val">0.5</span> : <span class="val">1</span>,
+  <span class="prop">cursor</span>: isLoading ? <span class="str">"not-allowed"</span> : <span class="str">"pointer"</span>,
+};</pre>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-sep"></div>
+
+  <!-- SECTION 5 -->
+  <h2 class="section-title"><span>📋</span> Bảng Tham Chiếu – CSS → React camelCase</h2>
+  <p class="section-desc">Tất cả các property hay dùng nhất trong React</p>
+
+  <table class="prop-table">
+    <thead>
+      <tr>
+        <th>CSS thuần</th>
+        <th>React (camelCase)</th>
+        <th>Giá trị phổ biến</th>
+        <th>Dùng để</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td><span class="pill">display</span></td><td><span class="pill">display</span></td><td><span class="pill-green">"flex"</span> <span class="pill-green">"block"</span> <span class="pill-green">"none"</span></td><td>Bật chế độ flex container</td></tr>
+      <tr><td><span class="pill">justify-content</span></td><td><span class="pill">justifyContent</span></td><td><span class="pill-purple">"center"</span> <span class="pill-purple">"space-between"</span></td><td>Căn chỉnh trục ngang</td></tr>
+      <tr><td><span class="pill">align-items</span></td><td><span class="pill">alignItems</span></td><td><span class="pill-purple">"center"</span> <span class="pill-purple">"flex-start"</span> <span class="pill-purple">"stretch"</span></td><td>Căn chỉnh trục dọc</td></tr>
+      <tr><td><span class="pill">flex-direction</span></td><td><span class="pill">flexDirection</span></td><td><span class="pill-orange">"row"</span> <span class="pill-orange">"column"</span></td><td>Hướng sắp xếp items</td></tr>
+      <tr><td><span class="pill">flex-wrap</span></td><td><span class="pill">flexWrap</span></td><td><span class="pill-orange">"nowrap"</span> <span class="pill-orange">"wrap"</span></td><td>Tự động xuống dòng</td></tr>
+      <tr><td><span class="pill">gap</span></td><td><span class="pill">gap</span></td><td><span class="pill-green">"8px"</span> <span class="pill-green">"16px"</span></td><td>Khoảng cách giữa items</td></tr>
+      <tr><td><span class="pill">background-color</span></td><td><span class="pill">backgroundColor</span></td><td><span class="pill-green">"#fff"</span> <span class="pill-green">"rgba(0,0,0,.5)"</span></td><td>Màu nền</td></tr>
+      <tr><td><span class="pill">border-radius</span></td><td><span class="pill">borderRadius</span></td><td><span class="pill-green">"8px"</span> <span class="pill-green">"50%"</span></td><td>Bo góc</td></tr>
+      <tr><td><span class="pill">font-size</span></td><td><span class="pill">fontSize</span></td><td><span class="pill-purple">"16px"</span> <span class="pill-purple">16</span></td><td>Kích thước chữ</td></tr>
+      <tr><td><span class="pill">font-weight</span></td><td><span class="pill">fontWeight</span></td><td><span class="pill-purple">"bold"</span> <span class="pill-purple">700</span></td><td>Độ đậm chữ</td></tr>
+      <tr><td><span class="pill">z-index</span></td><td><span class="pill">zIndex</span></td><td><span class="pill-orange">1</span> <span class="pill-orange">999</span></td><td>Thứ tự chồng lên</td></tr>
+      <tr><td><span class="pill">box-shadow</span></td><td><span class="pill">boxShadow</span></td><td><span class="pill-green">"0 4px 12px rgba(0,0,0,.3)"</span></td><td>Đổ bóng</td></tr>
+      <tr><td><span class="pill">align-self</span></td><td><span class="pill">alignSelf</span></td><td><span class="pill-purple">"auto"</span> <span class="pill-purple">"center"</span></td><td>Ghi đè alignItems cho 1 item</td></tr>
+      <tr><td><span class="pill">flex</span></td><td><span class="pill">flex</span></td><td><span class="pill-orange">"1"</span> <span class="pill-orange">"0 1 auto"</span></td><td>Co giãn item</td></tr>
+    </tbody>
+  </table>
+
+  <div class="section-sep"></div>
+
+  <!-- SECTION 6 -->
+  <h2 class="section-title"><span>💡</span> Mẹo & Lỗi Thường Gặp</h2>
+  <div class="tip-grid">
+    <div class="tip-card good">
+      <div class="tip-icon">✅</div>
+      <div class="tip-title">Số nguyên không cần đơn vị</div>
+      <div class="tip-body"><code>fontSize: 16</code> → React tự thêm <code>px</code><br/>Chỉ áp dụng cho property nhận đơn vị px.</div>
+    </div>
+    <div class="tip-card bad">
+      <div class="tip-icon">❌</div>
+      <div class="tip-title">Đừng dùng dấu chấm phẩy</div>
+      <div class="tip-body">Sai: <code>display: "flex"; color: "red"</code><br/>Đúng: <code>display: "flex", color: "red"</code><br/>Đây là JS object!</div>
+    </div>
+    <div class="tip-card info">
+      <div class="tip-icon">ℹ️</div>
+      <div class="tip-title">Style động với biến State</div>
+      <div class="tip-body"><code>color: isActive ? "blue" : "gray"</code><br/><code>opacity: isLoading ? 0.5 : 1</code></div>
+    </div>
+    <div class="tip-card warn">
+      <div class="tip-icon">⚠️</div>
+      <div class="tip-title">Inline style độ ưu tiên cao nhất</div>
+      <div class="tip-body">Inline style ghi đè CSS class. Dùng cho style <strong>động</strong>, dùng class cho style <strong>tĩnh</strong>.</div>
+    </div>
+    <div class="tip-card good">
+      <div class="tip-icon">🚀</div>
+      <div class="tip-title">Kết hợp nhiều style với spread</div>
+      <div class="tip-body"><code style="display:block;white-space:pre-wrap;">style={{ ...baseStyle, ...activeStyle }}</code></div>
+    </div>
+    <div class="tip-card info">
+      <div class="tip-icon">🎯</div>
+      <div class="tip-title">Không dùng được :hover inline</div>
+      <div class="tip-body">Inline không hỗ trợ <code>:hover</code>, <code>:focus</code>… Dùng CSS class hoặc state để xử lý.</div>
+    </div>
+  </div>
+
+  <div class="section-sep"></div>
+
+  <!-- SECTION 7 -->
+  <h2 class="section-title"><span>⚡</span> Quick Reference – justifyContent & alignItems</h2>
+  <p class="section-desc">Tất cả giá trị hay dùng nhất của 2 property quan trọng nhất</p>
+
+  <div class="quick-grid">
+    <div class="quick-card"><div class="quick-prop">justifyContent: "flex-start"</div><div class="quick-vals">Sắp xếp về đầu trục ngang (bên trái)</div></div>
+    <div class="quick-card"><div class="quick-prop">justifyContent: "flex-end"</div><div class="quick-vals">Sắp xếp về cuối trục ngang (bên phải)</div></div>
+    <div class="quick-card"><div class="quick-prop">justifyContent: "center"</div><div class="quick-vals">Căn giữa trục ngang ⭐ Hay dùng nhất</div></div>
+    <div class="quick-card"><div class="quick-prop">justifyContent: "space-between"</div><div class="quick-vals">Phân đều, item đầu/cuối dính cạnh</div></div>
+    <div class="quick-card"><div class="quick-prop">justifyContent: "space-around"</div><div class="quick-vals">Phân đều, có space ở hai đầu</div></div>
+    <div class="quick-card"><div class="quick-prop">justifyContent: "space-evenly"</div><div class="quick-vals">Khoảng cách bằng nhau hoàn toàn</div></div>
+    <div class="quick-card"><div class="quick-prop">alignItems: "flex-start"</div><div class="quick-vals">Căn về đầu trục dọc (trên cùng)</div></div>
+    <div class="quick-card"><div class="quick-prop">alignItems: "flex-end"</div><div class="quick-vals">Căn về cuối trục dọc (dưới cùng)</div></div>
+    <div class="quick-card"><div class="quick-prop">alignItems: "center"</div><div class="quick-vals">Căn giữa trục dọc ⭐ Hay dùng nhất</div></div>
+    <div class="quick-card"><div class="quick-prop">alignItems: "stretch"</div><div class="quick-vals">Kéo giãn items theo chiều dọc (mặc định)</div></div>
+    <div class="quick-card"><div class="quick-prop">alignItems: "baseline"</div><div class="quick-vals">Căn theo đường baseline của text</div></div>
+    <div class="quick-card" style="border-color:var(--accent);background:rgba(88,166,255,0.05);">
+      <div class="quick-prop" style="color:var(--accent3);">💡 Combo hay dùng nhất</div>
+      <div class="quick-vals" style="font-family:'Fira Code',monospace;font-size:11px;line-height:1.9;color:var(--text-muted);">
+        display: "flex"<br/>
+        justifyContent: "center"<br/>
+        alignItems: "center"
+      </div>
+    </div>
+  </div>
+
+  <div class="section-sep"></div>
+
+  <!-- ========== SECTION: HTML style attribute vs React ========== -->
+  <h2 class="section-title"><span>🆚</span> style="..." trong HTML vs style={{ }} trong React</h2>
+  <p class="section-desc">Đây là điểm khác biệt quan trọng – cùng kết quả nhưng cú pháp hoàn toàn khác nhau</p>
+
+  <div class="compare-grid">
+    <div class="compare-card">
+      <div class="compare-head head-css">🌐 HTML thuần – dùng <code style="font-family:'Fira Code',monospace">style="..."</code></div>
+      <div class="compare-body">
+        <pre><span class="cmt">&lt;!-- Viết như CSS thường, dùng kebab-case --&gt;</span>
+<span class="cmt">&lt;!-- Phân cách bằng dấu ; --&gt;</span>
+<span class="cmt">&lt;!-- Giá trị KHÔNG cần dấu nháy kép --&gt;</span>
+
+<span class="tag">&lt;div</span> <span class="attr">style</span>=<span class="str">"display: flex;
+       justify-content: center;
+       align-items: center;
+       background-color: #0d1117;
+       font-size: 16px;
+       border-radius: 8px;"</span><span class="tag">&gt;</span>
+  Hello
+<span class="tag">&lt;/div&gt;</span></pre>
+      </div>
+    </div>
+    <div class="compare-card">
+      <div class="compare-head head-react">⚛️ React JSX – dùng <code style="font-family:'Fira Code',monospace">style={{ }}</code></div>
+      <div class="compare-body">
+        <pre><span class="cmt">// Viết như JavaScript object, camelCase</span>
+<span class="cmt">// Phân cách bằng dấu ,</span>
+<span class="cmt">// Giá trị CÓ dấu nháy kép "..."</span>
+
+<span class="tag">&lt;div</span> <span class="attr">style</span>={{
+  <span class="prop">display</span>: <span class="str">"flex"</span>,
+  <span class="prop">justifyContent</span>: <span class="str">"center"</span>,
+  <span class="prop">alignItems</span>: <span class="str">"center"</span>,
+  <span class="prop">backgroundColor</span>: <span class="str">"#0d1117"</span>,
+  <span class="prop">fontSize</span>: <span class="str">"16px"</span>,
+  <span class="prop">borderRadius</span>: <span class="str">"8px"</span>,
+}}<span class="tag">&gt;</span>
+  Hello
+<span class="tag">&lt;/div&gt;</span></pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- Diff table -->
+  <div style="background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-top:20px;">
+    <table class="prop-table" style="margin:0;">
+      <thead><tr><th>Tiêu chí</th><th><span class="diff-badge diff-html">HTML style=""</span></th><th><span class="diff-badge diff-react">React style={{}}</span></th></tr></thead>
+      <tbody>
+        <tr><td>Tên property</td><td><span class="pill">kebab-case</span> (gạch ngang)</td><td><span class="pill">camelCase</span> (viết hoa)</td></tr>
+        <tr><td>Phân cách</td><td><span class="pill-orange">;</span> dấu chấm phẩy</td><td><span class="pill-green">,</span> dấu phẩy</td></tr>
+        <tr><td>Giá trị</td><td>Không cần nháy kép: <code style="font-family:'Fira Code',monospace;font-size:12px">flex</code></td><td>Cần nháy kép: <code style="font-family:'Fira Code',monospace;font-size:12px">"flex"</code></td></tr>
+        <tr><td>Kiểu dữ liệu</td><td>String (văn bản)</td><td>JavaScript Object</td></tr>
+        <tr><td>Ví dụ</td><td><code style="font-family:'Fira Code',monospace;font-size:11px">style="font-size: 16px"</code></td><td><code style="font-family:'Fira Code',monospace;font-size:11px">style={{ fontSize: 16 }}</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section-sep"></div>
+
+  <!-- ========== SECTION: CSS GRID ========== -->
+  <h2 class="section-title"><span>🔲</span> CSS Grid System – Chia Layout</h2>
+  <p class="section-desc">Grid là hệ thống chia cột/hàng mạnh nhất, thay thế Bootstrap grid bằng CSS thuần</p>
+
+  <!-- Grid tabs -->
+  <div class="gtab-wrap">
+    <button class="gtab active" onclick="showGrid(this,'g1')">📐 Cơ bản</button>
+    <button class="gtab" onclick="showGrid(this,'g2')">📏 Chia cột cố định</button>
+    <button class="gtab" onclick="showGrid(this,'g3')">🔀 Chia linh hoạt</button>
+    <button class="gtab" onclick="showGrid(this,'g4')">🗺️ Grid Areas (layout)</button>
+    <button class="gtab" onclick="showGrid(this,'g5')">📦 Span cột/hàng</button>
+  </div>
+
+  <!-- G1: Cơ bản -->
+  <div id="g1" class="">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+      <div class="code-block">
+        <div class="code-header"><div class="code-dots"><div class="code-dot cd-red"></div><div class="code-dot cd-yellow"></div><div class="code-dot cd-green"></div></div><span class="code-lang">grid-template-columns cơ bản</span></div>
+        <pre style="padding:18px;"><span class="fn">.container</span> {
+  <span class="prop">display</span>: <span class="str">grid</span>;
+  <span class="cmt">/* 3 cột bằng nhau */</span>
+  <span class="prop">grid-template-columns</span>: <span class="str">1fr 1fr 1fr</span>;
+  <span class="cmt">/* hoặc viết tắt */</span>
+  <span class="prop">grid-template-columns</span>: <span class="fn">repeat</span>(<span class="val">3</span>, <span class="str">1fr</span>);
+  <span class="prop">gap</span>: <span class="str">16px</span>;   <span class="cmt">/* khoảng cách */</span>
+}</pre>
+      </div>
+      <div class="grid-visual">
+        <div style="font-size:11px;color:var(--text-dim);margin-bottom:10px;text-transform:uppercase;letter-spacing:.06em;">Preview – 3 cột đều nhau</div>
+        <div class="gv-grid" style="grid-template-columns:1fr 1fr 1fr;">
+          <div class="gv-cell gc-1">Col 1</div>
+          <div class="gv-cell gc-2">Col 2</div>
+          <div class="gv-cell gc-3">Col 3</div>
+          <div class="gv-cell gc-4">Col 4</div>
+          <div class="gv-cell gc-5">Col 5</div>
+          <div class="gv-cell gc-6">Col 6</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- G2: Cố định -->
+  <div id="g2" style="display:none;">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+      <div class="code-block">
+        <div class="code-header"><div class="code-dots"><div class="code-dot cd-red"></div><div class="code-dot cd-yellow"></div><div class="code-dot cd-green"></div></div><span class="code-lang">Sidebar + Content layout</span></div>
+        <pre style="padding:18px;"><span class="fn">.layout</span> {
+  <span class="prop">display</span>: <span class="str">grid</span>;
+  <span class="cmt">/* 240px sidebar, còn lại cho content */</span>
+  <span class="prop">grid-template-columns</span>: <span class="str">240px 1fr</span>;
+  <span class="prop">gap</span>: <span class="str">20px</span>;
+  <span class="prop">min-height</span>: <span class="str">100vh</span>;
+}
+
+<span class="fn">.layout-3col</span> {
+  <span class="prop">display</span>: <span class="str">grid</span>;
+  <span class="cmt">/* sidebar | main | aside */</span>
+  <span class="prop">grid-template-columns</span>: <span class="str">200px 1fr 180px</span>;
+  <span class="prop">gap</span>: <span class="str">16px</span>;
+}</pre>
+      </div>
+      <div class="grid-visual">
+        <div style="font-size:11px;color:var(--text-dim);margin-bottom:10px;text-transform:uppercase;letter-spacing:.06em;">Preview – 240px sidebar + 1fr</div>
+        <div class="gv-grid" style="grid-template-columns:90px 1fr;min-height:160px;">
+          <div class="gv-cell gc-1" style="grid-row:span 3;">Side<br/>bar</div>
+          <div class="gv-cell gc-3">Header</div>
+          <div class="gv-cell gc-6" style="height:70px;align-items:flex-start;padding-top:14px;">Main Content</div>
+          <div class="gv-cell gc-4">Footer</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- G3: Linh hoạt -->
+  <div id="g3" style="display:none;">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+      <div class="code-block">
+        <div class="code-header"><div class="code-dots"><div class="code-dot cd-red"></div><div class="code-dot cd-yellow"></div><div class="code-dot cd-green"></div></div><span class="code-lang">auto-fill / auto-fit – responsive tự động</span></div>
+        <pre style="padding:18px;"><span class="fn">.cards</span> {
+  <span class="prop">display</span>: <span class="str">grid</span>;
+  <span class="cmt">/* Tự động tạo cột, mỗi cột tối thiểu 200px */</span>
+  <span class="prop">grid-template-columns</span>:
+    <span class="fn">repeat</span>(<span class="str">auto-fill</span>, <span class="fn">minmax</span>(<span class="str">200px</span>, <span class="str">1fr</span>));
+  <span class="prop">gap</span>: <span class="str">16px</span>;
+}
+
+<span class="cmt">/* auto-fill: giữ chỗ cột trống */</span>
+<span class="cmt">/* auto-fit: co lại nếu ít item */</span>
+<span class="cmt">/* minmax(min, max): kích thước min-max */</span></pre>
+      </div>
+      <div class="grid-visual">
+        <div style="font-size:11px;color:var(--text-dim);margin-bottom:10px;text-transform:uppercase;letter-spacing:.06em;">Preview – auto-fill responsive</div>
+        <div class="gv-grid" style="grid-template-columns:repeat(auto-fill,minmax(80px,1fr));">
+          <div class="gv-cell gc-1">Card</div>
+          <div class="gv-cell gc-2">Card</div>
+          <div class="gv-cell gc-3">Card</div>
+          <div class="gv-cell gc-4">Card</div>
+          <div class="gv-cell gc-5">Card</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- G4: Grid Areas -->
+  <div id="g4" style="display:none;">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+      <div class="code-block">
+        <div class="code-header"><div class="code-dots"><div class="code-dot cd-red"></div><div class="code-dot cd-yellow"></div><div class="code-dot cd-green"></div></div><span class="code-lang">grid-template-areas – đặt tên vùng</span></div>
+        <pre style="padding:18px;"><span class="fn">.page</span> {
+  <span class="prop">display</span>: <span class="str">grid</span>;
+  <span class="prop">grid-template-areas</span>:
+    <span class="str">"header  header  header"</span>
+    <span class="str">"sidebar main    main  "</span>
+    <span class="str">"footer  footer  footer"</span>;
+  <span class="prop">grid-template-columns</span>: <span class="str">200px 1fr 1fr</span>;
+  <span class="prop">grid-template-rows</span>: <span class="str">60px 1fr 50px</span>;
+  <span class="prop">gap</span>: <span class="str">8px</span>;
+}
+
+<span class="fn">.header</span>  { <span class="prop">grid-area</span>: <span class="str">header</span>;  }
+<span class="fn">.sidebar</span> { <span class="prop">grid-area</span>: <span class="str">sidebar</span>; }
+<span class="fn">.main</span>    { <span class="prop">grid-area</span>: <span class="str">main</span>;    }
+<span class="fn">.footer</span>  { <span class="prop">grid-area</span>: <span class="str">footer</span>;  }</pre>
+      </div>
+      <div class="grid-visual" style="padding:0;">
+        <div style="font-size:11px;color:var(--text-dim);padding:14px 14px 8px;text-transform:uppercase;letter-spacing:.06em;">Preview – Page Layout</div>
+        <div class="area-map">
+          <div class="am-cell am-header">🔝 Header</div>
+          <div class="am-cell am-sidebar">📋 Sidebar</div>
+          <div class="am-cell am-main">📄 Main Content</div>
+          <div class="am-cell am-footer">🔻 Footer</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- G5: Span -->
+  <div id="g5" style="display:none;">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+      <div class="code-block">
+        <div class="code-header"><div class="code-dots"><div class="code-dot cd-red"></div><div class="code-dot cd-yellow"></div><div class="code-dot cd-green"></div></div><span class="code-lang">grid-column / grid-row span – chiếm nhiều cột</span></div>
+        <pre style="padding:18px;"><span class="fn">.container</span> {
+  <span class="prop">display</span>: <span class="str">grid</span>;
+  <span class="prop">grid-template-columns</span>: <span class="fn">repeat</span>(<span class="val">3</span>, <span class="str">1fr</span>);
+  <span class="prop">gap</span>: <span class="str">8px</span>;
+}
+
+<span class="fn">.item-wide</span> {
+  <span class="cmt">/* chiếm 2 cột */</span>
+  <span class="prop">grid-column</span>: <span class="str">span 2</span>;
+}
+
+<span class="fn">.item-full</span> {
+  <span class="cmt">/* chiếm toàn bộ hàng */</span>
+  <span class="prop">grid-column</span>: <span class="str">1 / -1</span>;
+}
+
+<span class="fn">.item-tall</span> {
+  <span class="cmt">/* chiếm 2 hàng */</span>
+  <span class="prop">grid-row</span>: <span class="str">span 2</span>;
+}</pre>
+      </div>
+      <div class="grid-visual">
+        <div style="font-size:11px;color:var(--text-dim);margin-bottom:10px;text-transform:uppercase;letter-spacing:.06em;">Preview – Span columns</div>
+        <div class="gv-grid" style="grid-template-columns:repeat(3,1fr);">
+          <div class="gv-cell gc-1" style="grid-column:span 3;">Chiếm 3 cột (1 / -1)</div>
+          <div class="gv-cell gc-2" style="grid-column:span 2;">Span 2 cột</div>
+          <div class="gv-cell gc-3">1 cột</div>
+          <div class="gv-cell gc-4">1 cột</div>
+          <div class="gv-cell gc-5" style="grid-column:span 2;">Span 2 cột</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Grid property table -->
+  <div style="margin-top:28px;">
+    <h3 style="font-size:16px;font-weight:600;margin-bottom:14px;color:var(--text);">📋 Bảng tham chiếu Grid Properties</h3>
+    <table class="prop-table">
+      <thead><tr><th>Property</th><th>Giá trị ví dụ</th><th>Ý nghĩa</th></tr></thead>
+      <tbody>
+        <tr><td><span class="pill">display: grid</span></td><td>–</td><td>Bật chế độ Grid container</td></tr>
+        <tr><td><span class="pill">grid-template-columns</span></td><td><span class="pill-green">1fr 1fr 1fr</span> <span class="pill-purple">repeat(3, 1fr)</span> <span class="pill-orange">200px 1fr</span></td><td>Định nghĩa số cột và độ rộng</td></tr>
+        <tr><td><span class="pill">grid-template-rows</span></td><td><span class="pill-green">60px 1fr 50px</span></td><td>Định nghĩa số hàng và chiều cao</td></tr>
+        <tr><td><span class="pill">grid-template-areas</span></td><td><span class="pill-purple">"header header" "sidebar main"</span></td><td>Đặt tên vùng cho layout</td></tr>
+        <tr><td><span class="pill">gap</span></td><td><span class="pill-green">16px</span> <span class="pill-green">12px 20px</span></td><td>Khoảng cách giữa ô (row gap, col gap)</td></tr>
+        <tr><td><span class="pill">grid-column</span></td><td><span class="pill-orange">span 2</span> <span class="pill-orange">1 / -1</span> <span class="pill-orange">1 / 3</span></td><td>Item chiếm bao nhiêu cột</td></tr>
+        <tr><td><span class="pill">grid-row</span></td><td><span class="pill-orange">span 2</span></td><td>Item chiếm bao nhiêu hàng</td></tr>
+        <tr><td><span class="pill">grid-area</span></td><td><span class="pill-purple">header</span> <span class="pill-purple">sidebar</span></td><td>Gán item vào vùng đã đặt tên</td></tr>
+        <tr><td><span class="pill">justify-items</span></td><td><span class="pill-green">start</span> <span class="pill-green">center</span> <span class="pill-green">stretch</span></td><td>Căn ngang nội dung trong ô</td></tr>
+        <tr><td><span class="pill">align-items</span></td><td><span class="pill-green">start</span> <span class="pill-green">center</span> <span class="pill-green">stretch</span></td><td>Căn dọc nội dung trong ô</td></tr>
+        <tr><td><span class="pill">place-items</span></td><td><span class="pill-purple">center</span> <span class="pill-purple">center stretch</span></td><td>Shorthand cho align + justify items</td></tr>
+        <tr><td><span class="pill">minmax(min, max)</span></td><td><span class="pill-orange">minmax(200px, 1fr)</span></td><td>Giới hạn kích thước min và max</td></tr>
+        <tr><td><span class="pill">auto-fill</span></td><td><span class="pill-green">repeat(auto-fill, minmax(200px, 1fr))</span></td><td>Tự tạo cột, giữ chỗ trống</td></tr>
+        <tr><td><span class="pill">auto-fit</span></td><td><span class="pill-green">repeat(auto-fit, minmax(200px, 1fr))</span></td><td>Tự tạo cột, co lại nếu ít item</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Flex vs Grid -->
+  <div style="margin-top:28px;">
+    <h3 style="font-size:16px;font-weight:600;margin-bottom:14px;color:var(--text);">⚖️ Khi nào dùng Flexbox, khi nào dùng Grid?</h3>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+      <div class="tip-card info">
+        <div class="tip-icon">📏</div>
+        <div class="tip-title" style="color:var(--react);">Dùng Flexbox khi...</div>
+        <div class="tip-body">
+          ✅ Layout <strong>1 chiều</strong> (ngang hoặc dọc)<br/>
+          ✅ Navbar, menu, button group<br/>
+          ✅ Căn giữa 1 phần tử<br/>
+          ✅ Items có kích thước linh hoạt<br/><br/>
+          <code>display: flex</code>
+        </div>
+      </div>
+      <div class="tip-card good">
+        <div class="tip-icon">🔲</div>
+        <div class="tip-title" style="color:var(--accent3);">Dùng Grid khi...</div>
+        <div class="tip-body">
+          ✅ Layout <strong>2 chiều</strong> (cả ngang + dọc)<br/>
+          ✅ Chia trang thành Header, Sidebar, Main<br/>
+          ✅ Gallery, card grid đều nhau<br/>
+          ✅ Muốn control chính xác vị trí từng ô<br/><br/>
+          <code>display: grid</code>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div style="height:60px;"></div>
+</div>
+
+<script>
+  function switchTab(event, name) {
+    document.querySelectorAll('.demo-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.demo-pane').forEach(p => p.classList.remove('active'));
+    document.getElementById('tab-' + name).classList.add('active');
+    event.target.classList.add('active');
+  }
+
+  function updatePreview() {
+    const jc  = document.getElementById('jc').value;
+    const ai  = document.getElementById('ai').value;
+    const fd  = document.getElementById('fd').value;
+    const fw  = document.getElementById('fw').value;
+    const gap = document.getElementById('gap').value;
+    const inner = document.getElementById('preview-inner');
+    Object.assign(inner.style, {
+      display: 'flex', justifyContent: jc, alignItems: ai,
+      flexDirection: fd, flexWrap: fw, gap, width: '100%', height: '100%', padding: '12px'
+    });
+    document.getElementById('preview-code').innerHTML =
+      `<span style="color:#ff79c6">const</span> style = {\n` +
+      `  <span style="color:#8be9fd">display</span>: <span style="color:#f1fa8c">"flex"</span>,\n` +
+      `  <span style="color:#8be9fd">justifyContent</span>: <span style="color:#f1fa8c">"${jc}"</span>,\n` +
+      `  <span style="color:#8be9fd">alignItems</span>: <span style="color:#f1fa8c">"${ai}"</span>,\n` +
+      `  <span style="color:#8be9fd">flexDirection</span>: <span style="color:#f1fa8c">"${fd}"</span>,\n` +
+      `  <span style="color:#8be9fd">flexWrap</span>: <span style="color:#f1fa8c">"${fw}"</span>,\n` +
+      `  <span style="color:#8be9fd">gap</span>: <span style="color:#f1fa8c">"${gap}"</span>,\n` +
+      `};`;
+  }
+  updatePreview();
+
+  function showGrid(btn, id) {
+    ['g1','g2','g3','g4','g5'].forEach(g => {
+      const el = document.getElementById(g);
+      if(el) el.style.display = 'none';
+    });
+    document.querySelectorAll('.gtab').forEach(t => t.classList.remove('active'));
+    document.getElementById(id).style.display = 'block';
+    btn.classList.add('active');
+  }
+</script>
+</body>
+</html>

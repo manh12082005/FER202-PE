@@ -1,0 +1,13 @@
+{
+  "categories": [
+    { "id": 1, "name": "Action" },
+    { "id": 2, "name": "Comedy" },
+    { "id": 3, "name": "Drama" }
+  ],
+  "items": [
+    { "id": "1", "name": "Die Hard", "price": 100, "categoryId": 1 },
+    { "id": "2", "name": "The Hangover", "price": 50, "categoryId": 2 },
+    { "id": "3", "name": "Forrest Gump", "price": 120, "categoryId": 3 },
+    { "id": "4", "name": "Inception", "price": 150, "categoryId": 1 }
+  ]
+}

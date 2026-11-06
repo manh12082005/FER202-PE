@@ -1,0 +1,17 @@
+{
+  "courses": [
+    { "id": 1, "title": "IELTS Reading Beginner", "description": "Khóa học đọc hiểu cho người mới bắt đầu", "skill": "Reading", "level": "Beginner" },
+    { "id": 2, "title": "IELTS Reading Pro", "description": "Khóa học đọc hiểu nâng cao", "skill": "Reading", "level": "Pro" },
+    { "id": 3, "title": "IELTS Listening Beginner", "description": "Khóa học nghe cho người mới", "skill": "Listening", "level": "Beginner" },
+    { "id": 4, "title": "IELTS Listening Intermediate", "description": "Khóa học nghe trung cấp", "skill": "Listening", "level": "Intermediate" },
+    { "id": 5, "title": "IELTS Speaking Beginner", "description": "Luyện nói cho người mới", "skill": "Speaking", "level": "Beginner" },
+    { "id": 6, "title": "IELTS Speaking Pro", "description": "Luyện nói nâng cao", "skill": "Speaking", "level": "Pro" },
+    { "id": 7, "title": "IELTS Writing Intermediate", "description": "Luyện viết trung cấp", "skill": "Writing", "level": "Intermediate" },
+    { "id": 8, "title": "IELTS Writing Pro", "description": "Luyện viết nâng cao", "skill": "Writing", "level": "Pro" }
+  ],
+  "products": [
+    { "id": 1, "name": "iPhone 15", "price": 25000000 },
+    { "id": 2, "name": "Samsung Galaxy S24", "price": 22000000 },
+    { "id": 3, "name": "MacBook Air M2", "price": 35000000 }
+  ]
+}

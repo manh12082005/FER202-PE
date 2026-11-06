@@ -1,0 +1,30 @@
+.header{
+    background-color: orange;
+    padding: 10px;;
+    margin: 0;
+}
+.content{
+    display: flex;
+    gap:10px;
+}
+
+.footer{
+    background-color: orange;
+    padding: 10px;;
+    margin: 0;
+}
+.sider{
+    background-color: aqua;
+    padding:20px 50px;
+    margin:0;
+    height:400px;
+}
+.product-list{
+    display: grid;
+    grid-template-columns: repeat(3,1fr);
+    padding:10px;
+    gap:30px;
+}
+.product-item{
+    border:1px solid black;
+}
